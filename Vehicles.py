@@ -3,16 +3,18 @@ import math
 
 from controls import on_key_press, on_key_release  # Import the on_key_press and on_key_release functions
 import VehicleBody as vb
+from ScalarFields import gaussian
 
-SCREEN_WIDTH = 600
+SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 800
-BAR_WIDTH = 100
+BAR_WIDTH = 160
 BAR_HEIGHT = 10
 
 class MyGame(arcade.Window):
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Bar and Circles")
-        arcade.set_background_color(arcade.color.SKY_BLUE)
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Vehicles")
+        arcade.set_background_color((48,48,48))
+        #arcade.set_background_color(arcade.color.SKY_BLUE)
         self.bar = vb.Bar(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, BAR_WIDTH, BAR_HEIGHT)
 
         # Create a sprite list and add the bar and circles
@@ -34,6 +36,12 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         arcade.start_render()
+        # Visualize the Gaussian field
+        for x in range(0, SCREEN_WIDTH, 10):
+            for y in range(0, SCREEN_HEIGHT, 10):
+                value = gaussian(x, y, 255, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 150, 150)
+                color = (192, int(value), int(value))
+                arcade.draw_point(x, y, color, 5)
         self.sprite_list.draw()
 
     def on_update(self, delta_time):
