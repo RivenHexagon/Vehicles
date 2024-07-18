@@ -1,63 +1,68 @@
-# Basic arcade program using objects
-# Displays a white window with a blue circle in the middle
-
-# Imports
 import arcade
-import random
+import math
 
-import controls as ctrl
+from controls import on_key_press, on_key_release  # Import the on_key_press and on_key_release functions
+import VehicleBody as vb
 
-# Constants
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 800
-SCREEN_TITLE = "Homless under the Red Sun"
-SCALING = 2.0
-RADIUS = 150
+BAR_WIDTH = 100
+BAR_HEIGHT = 10
 
-# Classes
-class SpaceShooter(arcade.Window):
-    """Main welcome window
-    """
-    def __init__(self, _width, _height, _title):
-        """Initialize the window
-        """
-        super().__init__(_width, _height, _title)
-        arcade.set_background_color((48,48,48))
-        self.enemies_list = arcade.SpriteList()
-        self.clouds_list  = arcade.SpriteList()
-        self.all_sprites  = arcade.SpriteList()
-
-    def setup(self):
-        """Get the game ready to play
-        """
-        # Set the background color
+class MyGame(arcade.Window):
+    def __init__(self):
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Bar and Circles")
         arcade.set_background_color(arcade.color.SKY_BLUE)
-        # Set up the player
-        self.player = arcade.Sprite("sprites/player.png", SCALING)
-        self.player.center_y = 100#self.height / 2
-        self.player.left = 100
-        #self.player.velocity = (1, 0)
-        self.all_sprites.append(self.player)
+        self.bar = vb.Bar(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, BAR_WIDTH, BAR_HEIGHT)
 
-    def on_key_press(self, symbol, modifiers):
-        ctrl.on_key_press(self, symbol, modifiers)
+        # Create a sprite list and add the bar and circles
+        self.sprite_list = arcade.SpriteList()
+        self.sprite_list.append(self.bar)
+        self.sprite_list.append(self.bar.circle1)
+        self.sprite_list.append(self.bar.circle2)
 
-    def on_key_release(self, symbol: int, modifiers: int):
-        ctrl.on_key_release(self, symbol, modifiers)
+        # Create a moving sprite
+        self.moving_sprite = arcade.Sprite("sprites/hobo.png", 2.0)
+        #self.moving_sprite = arcade.Sprite(":resources:images/enemies/fly.png", 0.5)
+        self.moving_sprite.center_x = 100
+        self.moving_sprite.center_y = 100
+        self.moving_sprite.change_x = 0.2
+        self.sprite_list.append(self.moving_sprite)
+
+        # Track keys pressed
+        self.keys_pressed = set()
 
     def on_draw(self):
-        """Called whenever you need to draw your window
-        """
-        # Clear the screen and start drawing
         arcade.start_render()
-        arcade.draw_circle_filled(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.63, RADIUS, (192,32,32))
-        self.all_sprites.draw()
+        self.sprite_list.draw()
 
-    def on_update(self, delta_time: float):
-        self.all_sprites.update()
+    def on_update(self, delta_time):
+        # Update the sprite list
+        self.sprite_list.update()
 
-# Main code entry point
-if __name__ == "__main__":
-    app = SpaceShooter(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    app.setup()
+        # Update the bar based on keys pressed
+        if arcade.key.A in self.keys_pressed:
+            self.bar.move(-10, 0)
+        if arcade.key.D in self.keys_pressed:
+            self.bar.move(10, 0)
+        if arcade.key.W in self.keys_pressed:
+            self.bar.move(0, 10)
+        if arcade.key.S in self.keys_pressed:
+            self.bar.move(0, -10)
+        if arcade.key.Q in self.keys_pressed:
+            self.bar.rotate(5)
+        if arcade.key.E in self.keys_pressed:
+            self.bar.rotate(-5)
+
+    def on_key_press(self, key, modifiers):
+        on_key_press(key, modifiers, self.keys_pressed)  # Call the imported function with the keys_pressed set
+
+    def on_key_release(self, key, modifiers):
+        on_key_release(key, modifiers, self.keys_pressed)  # Call the imported function with the keys_pressed set
+
+def main():
+    game = MyGame()
     arcade.run()
+
+if __name__ == "__main__":
+    main()
