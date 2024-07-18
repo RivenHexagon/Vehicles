@@ -1,10 +1,8 @@
 import arcade
 import math
 from ScalarFields import gaussian
+import constants as c
 
-CIRCLE_RADIUS = 10
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 800
 
 class Bar(arcade.SpriteSolidColor):
     def __init__(self, x, y, width, height):
@@ -14,8 +12,8 @@ class Bar(arcade.SpriteSolidColor):
         self.angle = 0
 
         # Calculate the initial positions of the circles
-        self.circle1 = Circle(self.center_x + width / 2, self.center_y, CIRCLE_RADIUS)
-        self.circle2 = Circle(self.center_x - width / 2, self.center_y, CIRCLE_RADIUS)
+        self.circle1 = Circle(self.center_x + width / 2, self.center_y, c.CIRCLE_RADIUS)
+        self.circle2 = Circle(self.center_x - width / 2, self.center_y, c.CIRCLE_RADIUS)
 
     def update(self):
         # Update the circles' positions
@@ -48,9 +46,7 @@ class Circle(arcade.SpriteCircle):
         self.radius = radius
 
     def update_color(self):
-        value = gaussian(self.center_x, self.center_y, 255, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 150, 150)
+        value = gaussian(self.center_x, self.center_y, 255, c.SCREEN_WIDTH / 2, c.SCREEN_HEIGHT / 2, 150, 150)
         color_intensity = int(value)
-        print(color_intensity)
-        print(self.color)
         self.color = (192, color_intensity, color_intensity)
         self.texture = arcade.make_circle_texture(self.radius * 2, self.color)  # Update texture with new color

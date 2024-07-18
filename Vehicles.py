@@ -1,21 +1,19 @@
 import arcade
 import math
 
+import constants as c
 from controls import on_key_press, on_key_release  # Import the on_key_press and on_key_release functions
 import VehicleBody as vb
 from ScalarFields import gaussian
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 800
-BAR_WIDTH = 160
-BAR_HEIGHT = 10
 
-class MyGame(arcade.Window):
+
+class BraitenbergsWorld(arcade.Window):
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Vehicles")
+        super().__init__(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, "Vehicles")
         arcade.set_background_color((48,48,48))
         #arcade.set_background_color(arcade.color.SKY_BLUE)
-        self.bar = vb.Bar(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, BAR_WIDTH, BAR_HEIGHT)
+        self.bar = vb.Bar(c.SCREEN_WIDTH // 2, c.SCREEN_HEIGHT // 2, c.BAR_WIDTH, c.BAR_HEIGHT)
 
         # Create a sprite list and add the bar and circles
         self.sprite_list = arcade.SpriteList()
@@ -37,9 +35,9 @@ class MyGame(arcade.Window):
     def on_draw(self):
         arcade.start_render()
         # Visualize the Gaussian field
-        for x in range(0, SCREEN_WIDTH, 10):
-            for y in range(0, SCREEN_HEIGHT, 10):
-                value = gaussian(x, y, 255, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 150, 150)
+        for x in range(0, c.SCREEN_WIDTH, 10):
+            for y in range(0, c.SCREEN_HEIGHT, 10):
+                value = gaussian(x, y, 255, c.SCREEN_WIDTH / 2, c.SCREEN_HEIGHT / 2, 150, 150)
                 color = (192, int(value), int(value))
                 arcade.draw_point(x, y, color, 5)
         self.sprite_list.draw()
@@ -69,7 +67,7 @@ class MyGame(arcade.Window):
         on_key_release(key, modifiers, self.keys_pressed)  # Call the imported function with the keys_pressed set
 
 def main():
-    game = MyGame()
+    game = BraitenbergsWorld()
     arcade.run()
 
 if __name__ == "__main__":
