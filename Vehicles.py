@@ -50,9 +50,8 @@ class SpaceShooter(arcade.Window):
         """
         # Clear the screen and start drawing
         arcade.start_render()
-        self.all_sprites.draw()
-        # Draw a blue circle
         arcade.draw_circle_filled(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.63, RADIUS, (192,32,32))
+        self.all_sprites.draw()
 
     def on_update(self, delta_time: float):
         self.all_sprites.update()
