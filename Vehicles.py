@@ -13,13 +13,14 @@ class BraitenbergsWorld(arcade.Window):
         super().__init__(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, "Vehicles")
         arcade.set_background_color((48,48,48))
         #arcade.set_background_color(arcade.color.SKY_BLUE)
-        self.bar = vb.Bar(c.SCREEN_WIDTH // 2, c.SCREEN_HEIGHT // 2, c.BAR_WIDTH, c.BAR_HEIGHT)
+        self.MyVehicle = vb.Vehicle(self, c.SCREEN_WIDTH / 2, c.SCREEN_HEIGHT / 2, c.BAR_WIDTH, c.BAR_HEIGHT)
+
+        self.temperature = gaussian
 
         # Create a sprite list and add the bar and circles
         self.sprite_list = arcade.SpriteList()
-        self.sprite_list.append(self.bar)
-        self.sprite_list.append(self.bar.circle1)
-        self.sprite_list.append(self.bar.circle2)
+        #self.sprite_list.append(self.MyVehicle)
+        self.sprite_list.extend(self.MyVehicle.sprite_list)
 
         # Create a moving sprite
         self.moving_sprite = arcade.Sprite("sprites/hobo.png", 2.0)
@@ -48,17 +49,17 @@ class BraitenbergsWorld(arcade.Window):
 
         # Update the bar based on keys pressed
         if arcade.key.A in self.keys_pressed:
-            self.bar.move(-10, 0)
+            self.MyVehicle.move(-10, 0)
         if arcade.key.D in self.keys_pressed:
-            self.bar.move(10, 0)
+            self.MyVehicle.move(10, 0)
         if arcade.key.W in self.keys_pressed:
-            self.bar.move(0, 10)
+            self.MyVehicle.move(0, 10)
         if arcade.key.S in self.keys_pressed:
-            self.bar.move(0, -10)
+            self.MyVehicle.move(0, -10)
         if arcade.key.Q in self.keys_pressed:
-            self.bar.rotate(5)
+            self.MyVehicle.rotate(5)
         if arcade.key.E in self.keys_pressed:
-            self.bar.rotate(-5)
+            self.MyVehicle.rotate(-5)
 
     def on_key_press(self, key, modifiers):
         on_key_press(key, modifiers, self.keys_pressed)  # Call the imported function with the keys_pressed set
