@@ -27,8 +27,13 @@ class VehicleBody(arcade.SpriteSolidColor):
         self.update()
 
     def update(self):
-        self.sensorRig.center_x = self.center_x
-        self.sensorRig.center_y = self.center_y + self.sensorRigOffset
+        #self.sensorRig.center_x = self.center_x
+        #self.sensorRig.center_y = self.center_y + self.sensorRigOffset
+        angle_radians = math.radians(self.angle)
+        offset_x = self.sensorRigOffset * math.sin(angle_radians)
+        offset_y = self.sensorRigOffset * math.cos(angle_radians)
+        self.sensorRig.center_x = self.center_x - offset_x
+        self.sensorRig.center_y = self.center_y + offset_y
         self.sensorRig.angle = self.angle
         self.sensorRig.update()
 
