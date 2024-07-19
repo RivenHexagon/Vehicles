@@ -13,7 +13,7 @@ class BraitenbergsWorld(arcade.Window):
         super().__init__(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, "Vehicles")
         arcade.set_background_color((48,48,48))
         #arcade.set_background_color(arcade.color.SKY_BLUE)
-        self.MyVehicle = vb.VehicleBody(self, (c.SCREEN_WIDTH / 2)+80, 50, c.SENSOR_DIST, c.VEHICLE_HEIGHT)
+        self.MyVehicle = vb.VehicleBody(self, (c.SCREEN_WIDTH / 2)+100, 50, c.SENSOR_DIST, c.VEHICLE_HEIGHT)
         self.temperature = gaussian
 
         # Create a sprite list and add the bar and circles

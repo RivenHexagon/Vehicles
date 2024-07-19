@@ -77,7 +77,6 @@ class Sensor(arcade.SpriteCircle):
 
     def update_color(self):
         self.value = self.world.temperature(self.center_x, self.center_y, 255, c.SCREEN_WIDTH / 2, c.SCREEN_HEIGHT / 2, 150, 150)
-        print(self.value)
         color_intensity = int(self.value)
         self.color = (192, color_intensity, color_intensity)
         # Update texture with new color
@@ -90,5 +89,18 @@ class VehicleBrain:
     def update(self):
         val_left = self.vehicle.sensorRig.leftSensor.value
         val_right = self.vehicle.sensorRig.rightSensor.value
-        vel_y = (val_left + val_right) / 200
-        self.vehicle.velocity = (0.0, vel_y)
+        self.vehicle.velocity = self.calculate_velocity(val_left, val_right)
+        self.vehicle.angle = self.calculate_angle(val_left, val_right)
+        print("angle", self.vehicle.angle, "velocity", self.vehicle.velocity)
+
+    def calculate_velocity(self, val_left, val_right):
+        #speed = (val_left + val_right) / 200
+        speed = 2.0
+        angle_rad = math.radians(self.vehicle.angle)
+        vel_x = speed * math.sin(angle_rad)
+        vel_y = speed * math.cos(angle_rad)
+        return (vel_x, vel_y)
+    
+    def calculate_angle(self, val_left, val_right):
+        angle = (val_left - val_right) / 2.0
+        return angle
