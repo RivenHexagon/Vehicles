@@ -3,7 +3,7 @@ import math
 
 import constants as c
 from controls import on_key_press, on_key_release  # Import the on_key_press and on_key_release functions
-import VehicleBody as vb
+import Vehicle as vb
 from ScalarFields import gaussian
 
 
@@ -13,7 +13,7 @@ class BraitenbergsWorld(arcade.Window):
         super().__init__(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, "Vehicles")
         arcade.set_background_color((48,48,48))
         #arcade.set_background_color(arcade.color.SKY_BLUE)
-        self.MyVehicle = vb.Vehicle(self, c.SCREEN_WIDTH / 2, c.SCREEN_HEIGHT / 2, c.BAR_WIDTH, c.BAR_HEIGHT)
+        self.MyVehicle = vb.VehicleBody(self, c.SCREEN_WIDTH / 2, c.SCREEN_HEIGHT / 2, c.SENSOR_DIST, c.VEHICLE_HEIGHT)
 
         self.temperature = gaussian
 
