@@ -13,8 +13,7 @@ class BraitenbergsWorld(arcade.Window):
         super().__init__(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, "Vehicles")
         arcade.set_background_color((48,48,48))
         #arcade.set_background_color(arcade.color.SKY_BLUE)
-        self.MyVehicle = vb.VehicleBody(self, c.SCREEN_WIDTH / 2, c.SCREEN_HEIGHT / 2, c.SENSOR_DIST, c.VEHICLE_HEIGHT)
-
+        self.MyVehicle = vb.VehicleBody(self, (c.SCREEN_WIDTH / 2)+80, 50, c.SENSOR_DIST, c.VEHICLE_HEIGHT)
         self.temperature = gaussian
 
         # Create a sprite list and add the bar and circles
@@ -27,7 +26,8 @@ class BraitenbergsWorld(arcade.Window):
         #self.moving_sprite = arcade.Sprite(":resources:images/enemies/fly.png", 0.5)
         self.moving_sprite.center_x = 100
         self.moving_sprite.center_y = 100
-        self.moving_sprite.change_x = 0.2
+        #self.moving_sprite.change_x = 0.2
+        self.moving_sprite.velocity = (0.2, 0.0)
         self.sprite_list.append(self.moving_sprite)
 
         # Track keys pressed

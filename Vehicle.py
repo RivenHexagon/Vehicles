@@ -16,6 +16,7 @@ class VehicleBody(arcade.SpriteSolidColor):
         self.sprite_list.append(self)
         self.sensorRig = SensorRig(x, y + self.sensorRigOffset, c.SENSOR_DIST, world)
         self.sprite_list.extend(self.sensorRig.sprite_list)
+        self.brain = VehicleBrain(self)
 
     def rotate(self, delta_angle):
         self.angle += delta_angle
@@ -27,8 +28,7 @@ class VehicleBody(arcade.SpriteSolidColor):
         self.update()
 
     def update(self):
-        #self.sensorRig.center_x = self.center_x
-        #self.sensorRig.center_y = self.center_y + self.sensorRigOffset
+        super().update()
         angle_radians = math.radians(self.angle)
         offset_x = self.sensorRigOffset * math.sin(angle_radians)
         offset_y = self.sensorRigOffset * math.cos(angle_radians)
@@ -36,6 +36,7 @@ class VehicleBody(arcade.SpriteSolidColor):
         self.sensorRig.center_y = self.center_y + offset_y
         self.sensorRig.angle = self.angle
         self.sensorRig.update()
+        self.brain.update()
 
 class SensorRig(arcade.SpriteSolidColor):
     def __init__(self, x, y, senDist, world):
@@ -72,10 +73,22 @@ class Sensor(arcade.SpriteCircle):
         self.center_y = y
         self.radius = radius
         self.world = world
+        self.value = 0
 
     def update_color(self):
-        value = self.world.temperature(self.center_x, self.center_y, 255, c.SCREEN_WIDTH / 2, c.SCREEN_HEIGHT / 2, 150, 150)
-        color_intensity = int(value)
+        self.value = self.world.temperature(self.center_x, self.center_y, 255, c.SCREEN_WIDTH / 2, c.SCREEN_HEIGHT / 2, 150, 150)
+        print(self.value)
+        color_intensity = int(self.value)
         self.color = (192, color_intensity, color_intensity)
         # Update texture with new color
         self.texture = arcade.make_circle_texture(self.radius * 2, self.color) 
+
+class VehicleBrain:
+    def __init__(self, vehicle):
+        self.vehicle = vehicle
+
+    def update(self):
+        val_left = self.vehicle.sensorRig.leftSensor.value
+        val_right = self.vehicle.sensorRig.rightSensor.value
+        vel_y = (val_left + val_right) / 200
+        self.vehicle.velocity = (0.0, vel_y)
