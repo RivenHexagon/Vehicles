@@ -76,7 +76,7 @@ class Sensor(arcade.SpriteCircle):
         self.value = 0
 
     def update_color(self):
-        self.value = self.world.temperature(self.center_x, self.center_y, 255, c.SCREEN_WIDTH / 2, c.SCREEN_HEIGHT / 2, 150, 150)
+        self.value = self.world.temperature(self.center_x, self.center_y)
         color_intensity = int(self.value)
         self.color = (192, color_intensity, color_intensity)
         # Update texture with new color
@@ -90,17 +90,18 @@ class VehicleBrain:
         val_left = self.vehicle.sensorRig.leftSensor.value
         val_right = self.vehicle.sensorRig.rightSensor.value
         self.vehicle.velocity = self.calculate_velocity(val_left, val_right)
-        self.vehicle.angle = self.calculate_angle(val_left, val_right)
-        print("angle", self.vehicle.angle, "velocity", self.vehicle.velocity)
+        rot_speed = self.calculate_rot_speed(val_left, val_right)
+        self.vehicle.angle += rot_speed
+        print("angle", self.vehicle.angle, "rot_speed", rot_speed, "velocity", self.vehicle.velocity)
 
     def calculate_velocity(self, val_left, val_right):
-        #speed = (val_left + val_right) / 200
-        speed = 2.0
+        speed = (val_left + val_right) / 80
+        #speed = 2.0
         angle_rad = math.radians(self.vehicle.angle)
-        vel_x = speed * math.sin(angle_rad)
+        vel_x = -speed * math.sin(angle_rad)
         vel_y = speed * math.cos(angle_rad)
         return (vel_x, vel_y)
     
-    def calculate_angle(self, val_left, val_right):
-        angle = (val_left - val_right) / 2.0
-        return angle
+    def calculate_rot_speed(self, val_left, val_right):
+        rot_speed = -1.0 * (val_left - val_right) / 600.0
+        return rot_speed

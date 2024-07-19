@@ -4,17 +4,17 @@ import math
 import constants as c
 from controls import on_key_press, on_key_release  # Import the on_key_press and on_key_release functions
 import Vehicle as vb
-from ScalarFields import gaussian
+from ScalarFields import temperature_field
 
 
 
 class BraitenbergsWorld(arcade.Window):
     def __init__(self):
-        super().__init__(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, "Vehicles")
+        super().__init__(c.SCREEN_WIDTH, c.SCREEN_HEIGHT+200, "Vehicles")
         arcade.set_background_color((48,48,48))
         #arcade.set_background_color(arcade.color.SKY_BLUE)
-        self.MyVehicle = vb.VehicleBody(self, (c.SCREEN_WIDTH / 2)+100, 50, c.SENSOR_DIST, c.VEHICLE_HEIGHT)
-        self.temperature = gaussian
+        self.MyVehicle = vb.VehicleBody(self, (c.SCREEN_WIDTH / 2)+130, 50, c.SENSOR_DIST, c.VEHICLE_HEIGHT)
+        self.temperature = temperature_field
 
         # Create a sprite list and add the bar and circles
         self.sprite_list = arcade.SpriteList()
@@ -37,8 +37,8 @@ class BraitenbergsWorld(arcade.Window):
         arcade.start_render()
         # Visualize the Gaussian field
         for x in range(0, c.SCREEN_WIDTH, 10):
-            for y in range(0, c.SCREEN_HEIGHT, 10):
-                value = gaussian(x, y, 255, c.SCREEN_WIDTH / 2, c.SCREEN_HEIGHT / 2, 150, 150)
+            for y in range(0, c.SCREEN_HEIGHT+200, 10):
+                value = self.temperature(x,y)
                 color = (192, int(value), int(value))
                 arcade.draw_point(x, y, color, 5)
         self.sprite_list.draw()
