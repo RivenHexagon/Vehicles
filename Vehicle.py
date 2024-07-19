@@ -16,7 +16,9 @@ class VehicleBody(arcade.SpriteSolidColor):
         self.sprite_list.append(self)
         self.sensorRig = SensorRig(x, y + self.sensorRigOffset, c.SENSOR_DIST, world)
         self.sprite_list.extend(self.sensorRig.sprite_list)
+
         self.brain = VehicleBrain(self)
+        self.driver = Driver(self)
 
     def rotate(self, delta_angle):
         self.angle += delta_angle
@@ -29,6 +31,7 @@ class VehicleBody(arcade.SpriteSolidColor):
 
     def update(self):
         super().update()
+        self.brain.update()
         angle_radians = math.radians(self.angle)
         offset_x = self.sensorRigOffset * math.sin(angle_radians)
         offset_y = self.sensorRigOffset * math.cos(angle_radians)
@@ -36,7 +39,8 @@ class VehicleBody(arcade.SpriteSolidColor):
         self.sensorRig.center_y = self.center_y + offset_y
         self.sensorRig.angle = self.angle
         self.sensorRig.update()
-        self.brain.update()
+        #self.brain.update()
+
 
 class SensorRig(arcade.SpriteSolidColor):
     def __init__(self, x, y, senDist, world):
@@ -66,6 +70,7 @@ class SensorRig(arcade.SpriteSolidColor):
         self.leftSensor.update_color()
         self.rightSensor.update_color()
 
+
 class Sensor(arcade.SpriteCircle):
     def __init__(self, world, x, y, radius):
         super().__init__(radius, (192,32,32))
@@ -82,6 +87,7 @@ class Sensor(arcade.SpriteCircle):
         # Update texture with new color
         self.texture = arcade.make_circle_texture(self.radius * 2, self.color) 
 
+
 class VehicleBrain:
     def __init__(self, vehicle):
         self.vehicle = vehicle
@@ -89,19 +95,24 @@ class VehicleBrain:
     def update(self):
         val_left = self.vehicle.sensorRig.leftSensor.value
         val_right = self.vehicle.sensorRig.rightSensor.value
-        self.vehicle.velocity = self.calculate_velocity(val_left, val_right)
-        rot_speed = self.calculate_rot_speed(val_left, val_right)
-        self.vehicle.angle += rot_speed
+
+        speed = (val_left + val_right) / 80
+        rot_speed = -1.0 * (val_left - val_right) / 600.0
+
+        self.vehicle.driver.setSpeed(speed)
+        self.vehicle.driver.steer(rot_speed)
         print("angle", self.vehicle.angle, "rot_speed", rot_speed, "velocity", self.vehicle.velocity)
 
-    def calculate_velocity(self, val_left, val_right):
-        speed = (val_left + val_right) / 80
-        #speed = 2.0
+
+class Driver:
+    def __init__(self, vehicle):
+        self.vehicle = vehicle
+
+    def setSpeed(self, speed):
         angle_rad = math.radians(self.vehicle.angle)
         vel_x = -speed * math.sin(angle_rad)
         vel_y = speed * math.cos(angle_rad)
-        return (vel_x, vel_y)
+        self.vehicle.velocity = (vel_x, vel_y)
     
-    def calculate_rot_speed(self, val_left, val_right):
-        rot_speed = -1.0 * (val_left - val_right) / 600.0
-        return rot_speed
+    def steer(self, rot_speed):
+        self.vehicle.angle += rot_speed
