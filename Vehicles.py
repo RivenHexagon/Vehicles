@@ -1,5 +1,7 @@
 import arcade
 import math
+from PIL import Image
+import numpy as np
 
 import constants as c
 from controls import on_key_press, on_key_release  # Import the on_key_press and on_key_release functions
@@ -10,10 +12,10 @@ from ScalarFields import temperature_field
 
 class BraitenbergsWorld(arcade.Window):
     def __init__(self):
-        super().__init__(c.SCREEN_WIDTH, c.SCREEN_HEIGHT+200, "Vehicles")
+        super().__init__(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, "Vehicles")
         arcade.set_background_color((48,48,48))
         #arcade.set_background_color(arcade.color.SKY_BLUE)
-        self.MyVehicle = vb.VehicleBody(self, (c.SCREEN_WIDTH / 2)+130, 50, c.SENSOR_DIST, c.VEHICLE_HEIGHT)
+        self.MyVehicle = vb.VehicleBody(self, c.VEHICLE_START, c.SENSOR_DIST, c.VEHICLE_HEIGHT)
         self.temperature = temperature_field
 
         # Create a sprite list and add the bar and circles
@@ -32,16 +34,34 @@ class BraitenbergsWorld(arcade.Window):
 
         # Track keys pressed
         self.keys_pressed = set()
+        self.scalar_field_texture = self.create_scalar_field_texture()
+
+    def create_scalar_field_texture(self):
+        width, height = c.SCREEN_WIDTH, c.SCREEN_HEIGHT
+        field_data = np.zeros((height, width, 3), dtype=np.uint8)
+
+        for x in range(width):
+            for y in range(height):
+                value = self.temperature(x, height - y)
+                color = (c.FIELD_AMPLITUDE, int(value), int(value))
+                field_data[y, x] = color
+
+        image = Image.fromarray(field_data, 'RGB')
+        return arcade.Texture("scalar_field", image)
 
     def on_draw(self):
         arcade.start_render()
         # Visualize the Gaussian field
-        for x in range(0, c.SCREEN_WIDTH, 10):
-            for y in range(0, c.SCREEN_HEIGHT+200, 10):
-                value = self.temperature(x,y)
-                color = (192, int(value), int(value))
-                arcade.draw_point(x, y, color, 5)
+        #self.draw_scalar_field()
+        arcade.draw_lrwh_rectangle_textured(0, 0, c.SCREEN_WIDTH, c.SCREEN_HEIGHT , self.scalar_field_texture)
         self.sprite_list.draw()
+
+    def draw_scalar_field(self):
+        for x in range(0, c.SCREEN_WIDTH, 10):
+            for y in range(0, c.SCREEN_HEIGHT, 10):
+                value = self.temperature(x,y)
+                color = (c.FIELD_AMPLITUDE, int(value), int(value))
+                arcade.draw_point(x, y, color, 5)
 
     def on_update(self, delta_time):
         # Update the sprite list

@@ -5,16 +5,16 @@ import constants as c
 
 
 class VehicleBody(arcade.SpriteSolidColor):
-    def __init__(self, world, x, y, width, height):
+    def __init__(self, world, start_pos, width, height):
         super().__init__(width, height, (128,128,128))
-        self.center_x = x
-        self.center_y = y
+        self.center_x = start_pos[0]
+        self.center_y = start_pos[1]
         self.angle = 0
         self.world = world
         self.sensorRigOffset = c.SENSOR_RIG_OFFSET
         self.sprite_list = arcade.SpriteList()
         self.sprite_list.append(self)
-        self.sensorRig = SensorRig(x, y + self.sensorRigOffset, c.SENSOR_DIST, world)
+        self.sensorRig = SensorRig(start_pos[0], start_pos[1] + self.sensorRigOffset, c.SENSOR_DIST, world)
         self.sprite_list.extend(self.sensorRig.sprite_list)
 
         self.brain = VehicleBrain(self)
@@ -83,7 +83,7 @@ class Sensor(arcade.SpriteCircle):
     def update_color(self):
         self.value = self.world.temperature(self.center_x, self.center_y)
         color_intensity = int(self.value)
-        self.color = (192, color_intensity, color_intensity)
+        self.color = (c.FIELD_AMPLITUDE, color_intensity, color_intensity)
         # Update texture with new color
         self.texture = arcade.make_circle_texture(self.radius * 2, self.color) 
 
@@ -97,11 +97,11 @@ class VehicleBrain:
         val_right = self.vehicle.sensorRig.rightSensor.value
 
         speed = (val_left + val_right) / 80
-        rot_speed = -1.0 * (val_left - val_right) / 600.0
+        rot_speed = -1.0 * (val_left - val_right) / 300.0
 
         self.vehicle.driver.setSpeed(speed)
         self.vehicle.driver.steer(rot_speed)
-        print("angle", self.vehicle.angle, "rot_speed", rot_speed, "velocity", self.vehicle.velocity)
+        print("angle", f"{self.vehicle.angle:.2f}", "rot_speed", f"{rot_speed:.2f}", "velocity", f"{self.vehicle.velocity[0]:.2f}", f"{self.vehicle.velocity[1]:.2f}")
 
 
 class Driver:
