@@ -29,7 +29,7 @@ class BraitenbergsWorld(arcade.Window):
         self.moving_sprite.center_x = 100
         self.moving_sprite.center_y = 100
         #self.moving_sprite.change_x = 0.2
-        self.moving_sprite.velocity = (0.2, 0.0)
+        self.moving_sprite.velocity = (0.0, 0.0)
         self.sprite_list.append(self.moving_sprite)
 
         # Track keys pressed

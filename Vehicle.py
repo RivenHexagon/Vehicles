@@ -1,6 +1,8 @@
 import arcade
 import math
+
 from ScalarFields import gaussian
+from VehicleBrains import *
 import constants as c
 
 
@@ -17,7 +19,7 @@ class VehicleBody(arcade.SpriteSolidColor):
         self.sensorRig = SensorRig(start_pos[0], start_pos[1] + self.sensorRigOffset, c.SENSOR_DIST, world)
         self.sprite_list.extend(self.sensorRig.sprite_list)
 
-        self.brain = VehicleBrain(self)
+        self.brain = VehicleBrain2(self)
         self.driver = Driver(self)
 
     def rotate(self, delta_angle):
@@ -86,22 +88,6 @@ class Sensor(arcade.SpriteCircle):
         self.color = (c.FIELD_AMPLITUDE, color_intensity, color_intensity)
         # Update texture with new color
         self.texture = arcade.make_circle_texture(self.radius * 2, self.color) 
-
-
-class VehicleBrain:
-    def __init__(self, vehicle):
-        self.vehicle = vehicle
-
-    def update(self):
-        val_left = self.vehicle.sensorRig.leftSensor.value
-        val_right = self.vehicle.sensorRig.rightSensor.value
-
-        speed = (val_left + val_right) / 80
-        rot_speed = -1.0 * (val_left - val_right) / 300.0
-
-        self.vehicle.driver.setSpeed(speed)
-        self.vehicle.driver.steer(rot_speed)
-        print("angle", f"{self.vehicle.angle:.2f}", "rot_speed", f"{rot_speed:.2f}", "velocity", f"{self.vehicle.velocity[0]:.2f}", f"{self.vehicle.velocity[1]:.2f}")
 
 
 class Driver:
