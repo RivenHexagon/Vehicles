@@ -55,6 +55,9 @@ class BraitenbergsWorld(arcade.Window):
         #self.draw_scalar_field()
         arcade.draw_lrwh_rectangle_textured(0, 0, c.SCREEN_WIDTH, c.SCREEN_HEIGHT , self.scalar_field_texture)
         self.sprite_list.draw()
+        self.MyVehicle.angle_text.draw()
+        self.MyVehicle.sensorRig.leftSensor.value_text.draw()
+        self.MyVehicle.sensorRig.rightSensor.value_text.draw()
 
     def draw_scalar_field(self):
         for x in range(0, c.SCREEN_WIDTH, 10):

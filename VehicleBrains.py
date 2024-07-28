@@ -28,8 +28,8 @@ class VehicleBrain2(VehicleBrain):
         act_input = (val_left + val_right) / 2
         print("act_input:", act_input)
         speed = self.activation_function(act_input, c.MAX_SPEED, 128, 40)
-        act_input = val_left - val_right
-        #rot_speed = self.activation_function(act_input, MAX_ROT_SPEED, 0, 100)
+        act_input = (val_left - val_right) / 2
+        #rot_speed = self.activation_function(act_input, c.MAX_ROT_SPEED, 0, 100)
         rot_speed = -1.0 * (val_left - val_right) / 300.0
         return speed, rot_speed
 

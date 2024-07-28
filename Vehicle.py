@@ -22,6 +22,16 @@ class VehicleBody(arcade.SpriteSolidColor):
         self.brain = VehicleBrain2(self)
         self.driver = Driver(self)
 
+        self.angle_text = arcade.Text(
+            "angle text",
+            self.center_x, self.center_y,
+            arcade.color.BLACK,
+            10,
+            anchor_x="center",
+            anchor_y="center",
+            rotation=self.angle
+        )
+
     def rotate(self, delta_angle):
         self.angle += delta_angle
         self.update()
@@ -41,6 +51,10 @@ class VehicleBody(arcade.SpriteSolidColor):
         self.sensorRig.center_y = self.center_y + offset_y
         self.sensorRig.angle = self.angle
         self.sensorRig.update()
+        self.angle_text.x = self.center_x
+        self.angle_text.y = self.center_y
+        #self.rotating_text.rotation = self.angle
+        self.angle_text.text = f"{self.angle:.2f}"
         #self.brain.update()
 
 
@@ -69,8 +83,8 @@ class SensorRig(arcade.SpriteSolidColor):
         self.rightSensor.center_x = self.center_x - half_width * math.cos(angle_radians)
         self.rightSensor.center_y = self.center_y - half_width * math.sin(angle_radians)
 
-        self.leftSensor.update_color()
-        self.rightSensor.update_color()
+        self.leftSensor.update()
+        self.rightSensor.update()
 
 
 class Sensor(arcade.SpriteCircle):
@@ -81,6 +95,24 @@ class Sensor(arcade.SpriteCircle):
         self.radius = radius
         self.world = world
         self.value = 0
+        self.value_text = arcade.Text(
+            "value text",
+            self.center_x, self.center_y,
+            arcade.color.BLACK,
+            10,
+            anchor_x="center",
+            anchor_y="center",
+            rotation=0.0
+            )
+    
+    def update(self):
+        self.update_text()
+        self.update_color()
+
+    def update_text(self):
+        self.value_text.text = f"{self.value:.2f}"
+        self.value_text.x = self.center_x
+        self.value_text.y = self.center_y
 
     def update_color(self):
         self.value = self.world.temperature(self.center_x, self.center_y)
