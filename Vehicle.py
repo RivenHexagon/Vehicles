@@ -8,7 +8,7 @@ import constants as c
 
 class VehicleBody(arcade.SpriteSolidColor):
     def __init__(self, world, start_pos, width, height):
-        super().__init__(width, height, (128,128,128))
+        super().__init__(width, height, c.VEHICLE_COLOR)
         self.center_x = start_pos[0]
         self.center_y = start_pos[1]
         self.angle = 0
@@ -54,13 +54,13 @@ class VehicleBody(arcade.SpriteSolidColor):
         self.angle_text.x = self.center_x
         self.angle_text.y = self.center_y
         #self.rotating_text.rotation = self.angle
-        self.angle_text.text = f"{self.angle:.2f}"
+        self.angle_text.text = f"{self.angle:.1f}"
         #self.brain.update()
 
 
 class SensorRig(arcade.SpriteSolidColor):
     def __init__(self, x, y, senDist, world):
-        super().__init__(senDist, 10, (48,48,48))
+        super().__init__(senDist, c.SENSOR_RIG_WIDTH, c.SENSOR_RIG_COLOR)
         self.center_x = x
         self.center_y = y
         self.angle = 0
@@ -110,7 +110,7 @@ class Sensor(arcade.SpriteCircle):
         self.update_color()
 
     def update_text(self):
-        self.value_text.text = f"{self.value:.2f}"
+        self.value_text.text = f"{self.value:.1f}"
         self.value_text.x = self.center_x
         self.value_text.y = self.center_y
 

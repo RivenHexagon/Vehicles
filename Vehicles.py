@@ -15,7 +15,7 @@ class BraitenbergsWorld(arcade.Window):
         super().__init__(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, "Vehicles")
         arcade.set_background_color((48,48,48))
         #arcade.set_background_color(arcade.color.SKY_BLUE)
-        self.MyVehicle = vb.VehicleBody(self, c.VEHICLE_START, c.SENSOR_DIST, c.VEHICLE_HEIGHT)
+        self.MyVehicle = vb.VehicleBody(self, c.VEHICLE_START, c.VEHICLE_WIDTH, c.VEHICLE_HEIGHT)
         self.temperature = temperature_field
 
         # Create a sprite list and add the bar and circles
@@ -35,6 +35,7 @@ class BraitenbergsWorld(arcade.Window):
         # Track keys pressed
         self.keys_pressed = set()
         self.scalar_field_texture = self.create_scalar_field_texture()
+        self.monitor = Monitor(self)
 
     def create_scalar_field_texture(self):
         width, height = c.SCREEN_WIDTH, c.SCREEN_HEIGHT
@@ -58,6 +59,7 @@ class BraitenbergsWorld(arcade.Window):
         self.MyVehicle.angle_text.draw()
         self.MyVehicle.sensorRig.leftSensor.value_text.draw()
         self.MyVehicle.sensorRig.rightSensor.value_text.draw()
+        self.monitor.draw_text()
 
     def draw_scalar_field(self):
         for x in range(0, c.SCREEN_WIDTH, 10):
@@ -69,6 +71,7 @@ class BraitenbergsWorld(arcade.Window):
     def on_update(self, delta_time):
         # Update the sprite list
         self.sprite_list.update()
+        self.monitor.update()
 
         # Update the bar based on keys pressed
         if arcade.key.A in self.keys_pressed:
@@ -89,6 +92,75 @@ class BraitenbergsWorld(arcade.Window):
 
     def on_key_release(self, key, modifiers):
         on_key_release(key, modifiers, self.keys_pressed)  # Call the imported function with the keys_pressed set
+
+class Monitor():
+    def __init__(self, world):
+        self.world = world
+        self.center_x = 40
+        self.center_y = 40
+        self.vehicle_max_x = 0.0
+        self.vehicle_max_y = 0.0
+        self.vehicle_min_x = 0.0
+        self.vehicle_min_y = 0.0
+        self.max_x_text = arcade.Text(
+            f"{self.vehicle_max_x:.1f}",
+            self.center_x, self.center_y,
+            arcade.color.BLACK,
+            10,
+            anchor_x="center",
+            anchor_y="center",
+            rotation=0.0
+            )
+        self.max_y_text = arcade.Text(
+            f"{self.vehicle_max_y:.1f}",
+            self.center_x, self.center_y+10,
+            arcade.color.BLACK,
+            10,
+            anchor_x="center",
+            anchor_y="center",
+            rotation=0.0
+            )
+        self.min_x_text = arcade.Text(
+            f"{self.vehicle_min_x:.1f}",
+            self.center_x, self.center_y+20,
+            arcade.color.BLACK,
+            10,
+            anchor_x="center",
+            anchor_y="center",
+            rotation=0.0
+            )
+        self.min_y_text = arcade.Text(
+            f"{self.vehicle_min_y:.1f}",
+            self.center_x, self.center_y+30,
+            arcade.color.BLACK,
+            10,
+            anchor_x="center",
+            anchor_y="center",
+            rotation=0.0
+            )
+    
+    def update(self):
+        if self.vehicle_max_x < self.world.MyVehicle.center_x:
+            self.vehicle_max_x = self.world.MyVehicle.center_x
+        if self.vehicle_max_y < self.world.MyVehicle.center_y:
+            self.vehicle_max_y = self.world.MyVehicle.center_y
+        if self.vehicle_min_x > self.world.MyVehicle.center_x:
+            self.vehicle_min_x = self.world.MyVehicle.center_x
+        if self.vehicle_min_y > self.world.MyVehicle.center_y:
+            self.vehicle_min_y = self.world.MyVehicle.center_y
+        self.update_text()
+
+    def draw_text(self):
+        self.max_x_text.draw()
+        self.max_y_text.draw()
+        self.min_x_text.draw()
+        self.min_y_text.draw()
+
+    def update_text(self):
+            self.max_x_text.text = f"{self.vehicle_max_x:.1f}"
+            self.max_y_text.text = f"{self.vehicle_max_y:.1f}"
+            self.min_x_text.text = f"{self.vehicle_min_x:.1f}"
+            self.min_y_text.text = f"{self.vehicle_min_y:.1f}"
 
 def main():
     game = BraitenbergsWorld()

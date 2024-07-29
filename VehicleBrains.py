@@ -13,7 +13,7 @@ class VehicleBrain:
 
         self.vehicle.driver.setSpeed(speed)
         self.vehicle.driver.steer(rot_speed)
-        print("angle", f"{self.vehicle.angle:.2f}", "rot_speed", f"{rot_speed:.2f}", "velocity", f"{self.vehicle.velocity[0]:.2f}", f"{self.vehicle.velocity[1]:.2f}")
+        #print("angle", f"{self.vehicle.angle:.2f}", "rot_speed", f"{rot_speed:.2f}", "velocity", f"{self.vehicle.velocity[0]:.2f}", f"{self.vehicle.velocity[1]:.2f}")
     
     def think(self, val_left, val_right):
         speed = (val_left + val_right) / 80
@@ -26,7 +26,7 @@ class VehicleBrain2(VehicleBrain):
 
     def think(self, val_left, val_right):
         act_input = (val_left + val_right) / 2
-        print("act_input:", act_input)
+        #print("act_input:", act_input)
         speed = self.activation_function(act_input, c.MAX_SPEED, 128, 40)
         act_input = (val_left - val_right) / 2
         #rot_speed = self.activation_function(act_input, c.MAX_ROT_SPEED, 0, 100)
