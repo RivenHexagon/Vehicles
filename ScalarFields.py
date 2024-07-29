@@ -7,4 +7,9 @@ def gaussian(x, y, amplitude, x0, y0, sigma_x, sigma_y):
 def temperature_field(x, y):
     heat_source1 = gaussian(x, y, c.FIELD_AMPLITUDE, 400, c.SCREEN_HEIGHT * 0.75, 150, 150)
     heat_source2 = gaussian(x, y, c.FIELD_AMPLITUDE, 640 , c.SCREEN_HEIGHT * 0.25, 150, 150)
-    return max(heat_source1, heat_source2)
+    val1 = max(heat_source1, heat_source2)
+    return val1
+
+def poison_source(x, y):
+    poison_source1 = gaussian(x, y, c.FIELD_AMPLITUDE, 880 , c.SCREEN_HEIGHT * 0.5, 150, 150)
+    return poison_source1

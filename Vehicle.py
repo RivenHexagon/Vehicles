@@ -16,7 +16,7 @@ class VehicleBody(arcade.SpriteSolidColor):
         self.sensorRigOffset = c.SENSOR_RIG_OFFSET
         self.sprite_list = arcade.SpriteList()
         self.sprite_list.append(self)
-        self.sensorRig = SensorRig(start_pos[0], start_pos[1] + self.sensorRigOffset, c.SENSOR_DIST, world)
+        self.sensorRig = SensorRig(start_pos[0], start_pos[1] + self.sensorRigOffset, c.SENSOR_DIST, self.world.temperature)
         self.sprite_list.extend(self.sensorRig.sprite_list)
 
         self.brain = VehicleBrain2(self)
@@ -67,15 +67,14 @@ class VehicleBody(arcade.SpriteSolidColor):
             arcade.draw_line_strip(self.trail, (48, 160, 48), 2)
 
 class SensorRig(arcade.SpriteSolidColor):
-    def __init__(self, x, y, senDist, world):
+    def __init__(self, x, y, senDist, scalar_field):
         super().__init__(senDist, c.SENSOR_RIG_WIDTH, c.SENSOR_RIG_COLOR)
         self.center_x = x
         self.center_y = y
         self.angle = 0
         self.sensorDistance = senDist
-        self.world = world
-        self.leftSensor  = Sensor(self.world, self.center_x + self.sensorDistance / 2, self.center_y, c.CIRCLE_RADIUS)
-        self.rightSensor = Sensor(self.world, self.center_x - self.sensorDistance / 2, self.center_y, c.CIRCLE_RADIUS)
+        self.leftSensor  = Sensor(scalar_field, self.center_x + self.sensorDistance / 2, self.center_y, c.CIRCLE_RADIUS)
+        self.rightSensor = Sensor(scalar_field, self.center_x - self.sensorDistance / 2, self.center_y, c.CIRCLE_RADIUS)
         self.sprite_list = arcade.SpriteList()
         self.sprite_list.append(self)
         self.sprite_list.append(self.leftSensor)
@@ -96,12 +95,12 @@ class SensorRig(arcade.SpriteSolidColor):
 
 
 class Sensor(arcade.SpriteCircle):
-    def __init__(self, world, x, y, radius):
+    def __init__(self, scalar_field, x, y, radius):
         super().__init__(radius, (192,32,32))
+        self.scalar_field = scalar_field
         self.center_x = x
         self.center_y = y
         self.radius = radius
-        self.world = world
         self.value = 0
         self.value_text = arcade.Text(
             "value text",
@@ -123,7 +122,7 @@ class Sensor(arcade.SpriteCircle):
         self.value_text.y = self.center_y
 
     def update_color(self):
-        self.value = self.world.temperature(self.center_x, self.center_y)
+        self.value = self.scalar_field(self.center_x, self.center_y)
         color_intensity = int(self.value)
         self.color = (c.FIELD_AMPLITUDE, color_intensity, color_intensity)
         # Update texture with new color

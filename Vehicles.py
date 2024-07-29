@@ -15,9 +15,8 @@ class BraitenbergsWorld(arcade.Window):
         super().__init__(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, "Vehicles")
         arcade.set_background_color((48,48,48))
         #arcade.set_background_color(arcade.color.SKY_BLUE)
-        self.MyVehicle = vb.VehicleBody(self, c.VEHICLE_START, c.VEHICLE_WIDTH, c.VEHICLE_HEIGHT)
         self.temperature = temperature_field
-
+        self.MyVehicle = vb.VehicleBody(self, c.VEHICLE_START, c.VEHICLE_WIDTH, c.VEHICLE_HEIGHT)
         # Create a sprite list and add the bar and circles
         self.sprite_list = arcade.SpriteList()
         #self.sprite_list.append(self.MyVehicle)
@@ -80,9 +79,11 @@ class BraitenbergsWorld(arcade.Window):
         if arcade.key.D in self.keys_pressed:
             self.MyVehicle.move(10, 0)
         if arcade.key.W in self.keys_pressed:
-            self.MyVehicle.move(0, 10)
+            self.MyVehicle.driver.setSpeed(c.MAX_SPEED)
+            #self.MyVehicle.move(0, 10)
         if arcade.key.S in self.keys_pressed:
-            self.MyVehicle.move(0, -10)
+            self.MyVehicle.driver.setSpeed(-c.MAX_SPEED)
+            #self.MyVehicle.move(0, -10)
         if arcade.key.Q in self.keys_pressed:
             self.MyVehicle.rotate(5)
         if arcade.key.E in self.keys_pressed:
