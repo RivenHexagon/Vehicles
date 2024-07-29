@@ -27,13 +27,14 @@ class VehicleBrain2(VehicleBrain):
     def think(self, val_left, val_right):
         act_input = (val_left + val_right) / 2
         #print("act_input:", act_input)
-        speed = self.activation_function(act_input, c.MAX_SPEED, 128, 40)
+        amplitude = c.MAX_SPEED - c.MIN_SPEED
+        speed = self.activation_function(act_input, amplitude, 128, c.SIGMA, c.MIN_SPEED)
         act_input = (val_left - val_right) / 2
         #rot_speed = self.activation_function(act_input, c.MAX_ROT_SPEED, 0, 100)
         rot_speed = -1.0 * (val_left - val_right) / 300.0
         return speed, rot_speed
 
-    def activation_function(self, x, amplitude, x0, sigma_x):
-        y = amplitude * math.exp(-((x - x0) ** 2 / (2 * sigma_x ** 2)))
+    def activation_function(self, x, amplitude, x0, sigma_x, offs):
+        y = (amplitude * math.exp(-((x - x0) ** 2 / (2 * sigma_x ** 2)))) + offs
         return y
     

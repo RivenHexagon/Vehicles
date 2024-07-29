@@ -30,7 +30,8 @@ class VehicleBody(arcade.SpriteSolidColor):
             anchor_x="center",
             anchor_y="center",
             rotation=self.angle
-        )
+            )
+        self.trail = []
 
     def rotate(self, delta_angle):
         self.angle += delta_angle
@@ -56,7 +57,14 @@ class VehicleBody(arcade.SpriteSolidColor):
         #self.rotating_text.rotation = self.angle
         self.angle_text.text = f"{self.angle:.1f}"
         #self.brain.update()
+        self.trail.append((self.center_x, self.center_y))
+        if len(self.trail) > c.TRAIL_LENGTH:
+            self.trail.pop(0)
 
+    def draw_trail(self):
+        # Draw the trail
+        if len(self.trail) > 1:
+            arcade.draw_line_strip(self.trail, (48, 160, 48), 2)
 
 class SensorRig(arcade.SpriteSolidColor):
     def __init__(self, x, y, senDist, world):

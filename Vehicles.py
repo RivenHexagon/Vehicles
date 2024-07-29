@@ -60,6 +60,7 @@ class BraitenbergsWorld(arcade.Window):
         self.MyVehicle.sensorRig.leftSensor.value_text.draw()
         self.MyVehicle.sensorRig.rightSensor.value_text.draw()
         self.monitor.draw_text()
+        self.MyVehicle.draw_trail()
 
     def draw_scalar_field(self):
         for x in range(0, c.SCREEN_WIDTH, 10):
